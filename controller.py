@@ -32,16 +32,19 @@ class Controller:
 
     def calc_gyr_error(self):
         print("Start error calculating...")
-        for i in range(500):
-            self.serial_model.read_data()
-            print(f"\r{i}", end="")
-            self.serial_model.process_data()
-            if self.data_model.parse(self.serial_model.get_processed_data()):
-                self.gyr_error += self.data_model.angular_velocity
-                self.counter += 1
-
-        self.gyr_error /= self.counter
-        print(f"\n\nБіаси кутових швидкостей по осях: {self.gyr_error}\nКількість ітерацій розрахунку: {self.counter}")
+        try:
+            for i in range(500):
+                self.serial_model.read_data()
+                print(f"\r{i}", end="")
+                self.serial_model.process_data()
+                if self.data_model.parse(self.serial_model.get_processed_data()):
+                    self.gyr_error += self.data_model.angular_velocity
+                    self.counter += 1
+        
+            self.gyr_error /= self.counter
+            print(f"\n\nБіаси кутових швидкостей по осях: {self.gyr_error}\nКількість ітерацій розрахунку: {self.counter}")
+        except:
+            print("Connect esp32 with mpu6050")
 
     def update_view(self, enable_charts=False, enable_q=True):
         if ((t := time.time()) - self.previous_time) > 0.05:
@@ -66,12 +69,16 @@ class Controller:
             self.update_view(enable_charts=True, enable_q=True)
 
     def calculate_orientation(self):
-        self.compensated_gyr_data = self.data_model.angular_velocity - self.gyr_error
-        self.qW.set_vector_as_q(self.compensated_gyr_data)
-        q = self.q * self.qW / 2
-        self.q += q * 0.012
-        self.q.normalize()
+        try:
+            self.compensated_gyr_data = self.data_model.angular_velocity - self.gyr_error
+            self.qW.set_vector_as_q(self.compensated_gyr_data)
+            q = self.q * self.qW / 2
+            self.q += q * 0.012
+            self.q.normalize()
 
-        self.accel_q.set_vector_as_q(self.data_model.acceleration)
-        gel_accel = self.q * self.accel_q * self.q.conjugate
-        self.geo_accel_data = gel_accel.vector_to_numpy() - np.array([0, 9.81, 0])
+            self.accel_q.set_vector_as_q(self.data_model.acceleration)
+            gel_accel = self.q * self.accel_q * self.q.conjugate
+            self.geo_accel_data = gel_accel.vector_to_numpy() - np.array([0, 9.81, 0])
+        except:
+            print("Connect esp32 with mpu5060")
+            

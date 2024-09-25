@@ -132,7 +132,7 @@ class SerialModel:
         """
         try:
             self.ser.close()
-        except serial.SerialException:
+        except:
             return statuses.FAILED
         else:
             self._is_serial_connected = False
@@ -146,7 +146,7 @@ class SerialModel:
         """
         try:
             self._obtained_bytes = self.ser.readline()
-        except serial.SerialException:
+        except:
             self._lost_connection = True
             self.disconnect()
 
