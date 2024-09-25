@@ -60,16 +60,18 @@ class Controller:
             self.previous_time = t
 
     def run(self):
-        while True:
-            self.serial_model.read_data()
-            self.serial_model.process_data()
-            self.data_model.parse(self.serial_model.get_processed_data())
+        try:
+            while True:
+                self.serial_model.read_data()
+                self.serial_model.process_data()
+                self.data_model.parse(self.serial_model.get_processed_data())
 
-            self.calculate_orientation()
-            self.update_view(enable_charts=True, enable_q=True)
+                self.calculate_orientation()
+                self.update_view(enable_charts=True, enable_q=True)
+        except:
+            print("Connect some esp32 with mpu6050!")
 
     def calculate_orientation(self):
-        try:
             self.compensated_gyr_data = self.data_model.angular_velocity - self.gyr_error
             self.qW.set_vector_as_q(self.compensated_gyr_data)
             q = self.q * self.qW / 2
@@ -79,6 +81,5 @@ class Controller:
             self.accel_q.set_vector_as_q(self.data_model.acceleration)
             gel_accel = self.q * self.accel_q * self.q.conjugate
             self.geo_accel_data = gel_accel.vector_to_numpy() - np.array([0, 9.81, 0])
-        except:
-            print("Connect esp32 with mpu5060")
+
             
