@@ -3,6 +3,11 @@
 # Created 10.05.2023
 # By Bohdan Korzhak
 #
+
+import sys
+
+sys.path.append("../QuaternionVisualisation")
+
 import serial
 import struct
 from serial.tools.list_ports import comports

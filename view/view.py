@@ -1,3 +1,7 @@
+import sys
+
+sys.path.append("../QuaternionVisualisation/")
+
 import math
 import time
 import types
