@@ -10,14 +10,13 @@ from submodule.QLogic.src.QLogic import Quaternion
 
 class Controller:
     def __init__(self, view):
-        self.serial_model = SerialModel('COM10', 115200)
+        self.serial_model = SerialModel("COM10", 115200)
         self.serial_model.connect()
         self.data_model = DataModel()
         self.q = Quaternion(np.array([1, 0, 0, 0], dtype=np.float64))
         self.qW = Quaternion(np.array([1, 0, 0, 0], dtype=np.float64))
         self.lock = Lock()
-        self.view = view
-
+        
         self.gyr_error = np.array([0, 0, 0], dtype=np.float64)
         self.counter = 0
 
@@ -26,6 +25,10 @@ class Controller:
         self.accel_q = Quaternion()
         self.previous_time = time.time()
         self.calc_gyr_error()
+        self.view = view
+
+        self.view.addActionsToMenu(self.serial_model.get_serial_ports())
+        self.view.setActionFunc(self.view.menuPort, self.connectToCom)
 
     def get_q(self):
         return self.q
@@ -81,5 +84,10 @@ class Controller:
             self.accel_q.set_vector_as_q(self.data_model.acceleration)
             gel_accel = self.q * self.accel_q * self.q.conjugate
             self.geo_accel_data = gel_accel.vector_to_numpy() - np.array([0, 9.81, 0])
+
+    def connectToCom(self, com):
+        self.serial_model.disconnect()
+        self.serial_model._serial_port = com
+        self.serial_model.connect()
 
             

@@ -45,7 +45,7 @@
       <height>591</height>
      </rect>
     </property>
-    <layout class="QGridLayout" name="EverythingGrid" rowminimumheight="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0">
+    <layout class="QGridLayout" name="everythingGrid" rowminimumheight="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0">
      <property name="leftMargin">
       <number>10</number>
      </property>
@@ -452,7 +452,7 @@ vector</string>
       </layout>
      </item>
      <item row="11" column="0" colspan="3">
-      <layout class="QGridLayout" name="OrientationTablGrid">
+      <layout class="QGridLayout" name="orientationTableGrid">
        <property name="leftMargin">
         <number>5</number>
        </property>
@@ -1010,7 +1010,7 @@ vector</string>
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>950</x>
@@ -1097,13 +1097,13 @@ vector</string>
      <string>Port</string>
     </property>
    </widget>
-   <widget class="QMenu" name="menuview">
+   <widget class="QMenu" name="menuView">
     <property name="title">
      <string>view</string>
     </property>
    </widget>
    <addaction name="menuPort"/>
-   <addaction name="menuview"/>
+   <addaction name="menuView"/>
   </widget>
  </widget>
  <customwidgets>

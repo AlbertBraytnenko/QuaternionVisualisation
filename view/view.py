@@ -11,7 +11,7 @@ import pyqtgraph as pg
 import pyqtgraph.opengl as gl
 import threading
 from submodule.QLogic.src.QLogic import Quaternion
-from models.serial_model import SerialModel
+from functools import partial
 
 X, Y, Z = 0, 1, 2
 qW, qX, qY, qZ = 0, 1, 2, 3
@@ -34,15 +34,7 @@ class ViewQVisualiser(Ui_MainWindow):
         self.main_window.closeEvent = types.MethodType(self.__close_event, self.main_window)
 
         self.setupUi(main_window)
-        
-        self.sm = SerialModel()
-
-        for item in self.sm.get_serial_ports():
-           action = self.menuPort.addAction(str(item), lambda: self.menuPortChoice())
-           action.setCheckable(True)
-
-        # Add COM-ports to menu Ports
-        
+       
         # Шести-осьова анімація обертання об'єкта в просторі
         self.q = Quaternion()
 
@@ -393,5 +385,15 @@ class ViewQVisualiser(Ui_MainWindow):
             vector = np.array([vector_val[3], vector_val[1], vector_val[2]])
             self.rot_vector_axis.setData(pos=np.array([np.zeros(3), self.vector_len * vector]))
     
-    def menuPortChoice(self):
-        print("1")
+    def addActionsToMenu(self, lstOfActions):
+        for a in lstOfActions:
+            action = QtWidgets.QAction(self.main_window)
+            action.setObjectName(str(a))
+            action.setText(str(a))
+            action.setData(str(a)[:4])
+            self.menuPort.addAction(action)
+
+    def setActionFunc(self, menu, func):
+        for act in menu.actions():
+            a = act.data()
+            act.triggered.connect(partial(func, a))
