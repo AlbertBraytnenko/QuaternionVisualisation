@@ -11,7 +11,7 @@ The program that shows how quaternions, Euler angles and Direct Cosine Matrix wo
 1. Clone the repo and open repo folder
 
 ```bash
-git clone --recurse-submodules git@github.com:Korzhak/QuaternionVisualisation.git
+git clone --recurse-submodules git@github.com:AlbertBraytnenko/QuaternionVisualisation.git
 cd QuaternionVisualisation
 ```
 
