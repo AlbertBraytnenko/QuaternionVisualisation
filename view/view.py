@@ -28,13 +28,17 @@ class ViewQVisualiser(Ui_MainWindow):
     def __init__(self, main_window):
         super(ViewQVisualiser, self).__init__()
         self.main_window = main_window
-        self.main_window.setFixedSize(1409, 643)
 
         # Змінюємо метод closeEvent для вікна
         self.main_window.closeEvent = types.MethodType(self.__close_event, self.main_window)
 
         self.setupUi(main_window)
-       
+
+        self.addActionsToMenu(["charts", "left panel"], self.menuView)
+        self.lstOfFrames = [self.frame, self.frame_2]
+        for i in range(len(self.lstOfFrames)):
+            self.menuView.actions()[i].triggered.connect(partial(self.hideShowQWidgets, self.lstOfFrames[i])) #lambda i=i why bool
+
         # Шести-осьова анімація обертання об'єкта в просторі
         self.q = Quaternion()
 
@@ -385,15 +389,21 @@ class ViewQVisualiser(Ui_MainWindow):
             vector = np.array([vector_val[3], vector_val[1], vector_val[2]])
             self.rot_vector_axis.setData(pos=np.array([np.zeros(3), self.vector_len * vector]))
     
-    def addActionsToMenu(self, lstOfActions):
+    def addActionsToMenu(self, lstOfActions, menu):
+        menu.clear()
         for a in lstOfActions:
             action = QtWidgets.QAction(self.main_window)
             action.setObjectName(str(a))
             action.setText(str(a))
             action.setData(str(a)[:4])
-            self.menuPort.addAction(action)
+            menu.addAction(action)
 
     def setActionFunc(self, menu, func):
         for act in menu.actions():
-            a = act.data()
-            act.triggered.connect(partial(func, a))
+            try:
+                act.triggered.connect(partial(func, act.data()))
+            except:
+                act.triggered.connect(func)
+
+    def hideShowQWidgets(self, widget):
+        widget.setHidden(not widget.isHidden())

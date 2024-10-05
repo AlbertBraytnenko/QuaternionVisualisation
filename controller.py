@@ -27,8 +27,9 @@ class Controller:
         self.calc_gyr_error()
         self.view = view
 
-        self.view.addActionsToMenu(self.serial_model.get_serial_ports())
+        self.view.addActionsToMenu(self.serial_model.get_serial_ports(), self.view.menuPort)
         self.view.setActionFunc(self.view.menuPort, self.connectToCom)
+        self.view.menubar.triggered.connect(lambda: self.view.addActionsToMenu(self.serial_model.get_serial_ports(), self.view.menuPort))
 
     def get_q(self):
         return self.q
